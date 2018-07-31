@@ -1,11 +1,9 @@
-FROM debian:latest
+FROM fedora:latest
 
-RUN apt-get -y update \
-    && apt-get -y upgrade \
-    && apt-get -y install curl \
-    && apt-get -y install git \
-    && apt-get -y install unzip \
-    && apt-get -y install wget
+RUN dnf update -y \
+    && dnf upgrade -y \
+    && dnf group install "Development Tools" -y \
+    && dnf install wget -y
 
 ENV DART_VERSION=2.0.0-dev.69.4 \
     GRPC_VERSION=1.13.1 \
@@ -17,7 +15,7 @@ RUN mkdir -p /protoc \
 ENV PATH=$PATH:/protoc/bin
 
 # Install go & grpc for go using go get
-RUN apt-get -y install golang
+RUN dnf install golang -y
 ENV GOPATH=/root/go \
     GOBIN=/root/go/bin \
     PATH=$PATH:/root/go/bin
@@ -38,6 +36,6 @@ ENV PATH=$PATH:/dart/dart-sdk/bin
 RUN pub global activate protoc_plugin
 ENV PATH=$PATH:/root/.pub-cache/bin
 
-RUN apt-get clean && apt-get autoclean && apt autoremove
+RUN dnf clean all -y
 
 ENTRYPOINT ["protoc"]
