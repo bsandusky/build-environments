@@ -7,7 +7,9 @@ RUN apt-get -y update \
     && apt-get -y install unzip \
     && apt-get -y install wget
 
-ENV PROTOBUF_VERSION=3.10.1
+ENV DART_VERSION=2.6.1 \
+    GRPC_VERSION=1.25.0 \
+    PROTOBUF_VERSION=3.10.1
 
 RUN mkdir -p /protoc \
     && wget https://github.com/google/protobuf/releases/download/v${PROTOBUF_VERSION}/protoc-${PROTOBUF_VERSION}-linux-x86_64.zip \
@@ -26,6 +28,15 @@ RUN go get -u -v -ldflags '-w -s' \
 
 RUN cd /root/go/src/github.com/golang/protobuf/protoc-gen-go \
     && go install .
+
+# Install dart & grpc for dart using pub
+RUN mkdir -p /dart \
+    && wget https://storage.googleapis.com/dart-archive/channels/dev/release/${DART_VERSION}/sdk/dartsdk-linux-x64-release.zip \
+    && unzip dartsdk-linux-x64-release.zip -d /dart
+ENV PATH=$PATH:/dart/dart-sdk/bin
+
+RUN pub global activate protoc_plugin
+ENV PATH=$PATH:/root/.pub-cache/bin
 
 RUN apt-get clean && apt-get autoclean && apt autoremove
 
