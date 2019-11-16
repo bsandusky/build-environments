@@ -1,15 +1,15 @@
 FROM debian:latest
 
+ENV DART_VERSION=2.6.1 \
+    GRPC_VERSION=1.25.0 \
+    PROTOBUF_VERSION=3.10.1
+
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install curl \
     && apt-get -y install git \
     && apt-get -y install unzip \
     && apt-get -y install wget
-
-ENV DART_VERSION=2.6.1 \
-    GRPC_VERSION=1.25.0 \
-    PROTOBUF_VERSION=3.10.1
 
 RUN mkdir -p /protoc \
     && wget https://github.com/google/protobuf/releases/download/v${PROTOBUF_VERSION}/protoc-${PROTOBUF_VERSION}-linux-x86_64.zip \
